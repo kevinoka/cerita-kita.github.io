@@ -10,7 +10,8 @@
 <meta name="apple-mobile-web-app-title" content="Cerita Kita">
 <meta name="theme-color" content="#F2F6FB">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+<link rel="preload" as="image" href="login-bg.jpg">
 
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,8 +20,8 @@
 <style>
 /* Layout: album keluarga bernuansa biru — header penghitung hari, timeline/galeri seperti halaman album, tab bar bawah ala aplikasi */
 :root{
-  --paper:#F2F6FB; --card:#FFFFFF; --ink:#14223A; --muted:#5B6980; --line:#D9E2EE;
-  --accent:#2C5A9E; --accent-ink:#FFFFFF; --soft:#DFE9F7; --danger:#B3261E;
+  --paper:#F2F6FB; --paper-rgb:242,246,251; --card:#FFFFFF; --ink:#14223A; --muted:#5B6980; --line:#D9E2EE;
+  --accent:#2C5A9E; --accent-ink:#FFFFFF; --gold:#A8812F; --orn:.07; --soft:#DFE9F7; --danger:#B3261E;
   --t-kenalan:#2A7F86; --t-pacaran:#5A5CC4; --t-nikah:#A07A2A; --t-anak:#1F86C1; --t-lain:#5B6980;
   --shadow:0 1px 2px rgba(20,34,58,.08),0 6px 18px rgba(20,34,58,.08);
   --f-display:"Gloock",Georgia,"Times New Roman",serif;
@@ -28,13 +29,13 @@
   --f-hand:"Caveat","Segoe Print","Bradley Hand",cursive;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#0E1522; --card:#162033; --ink:#E7EEF8; --muted:#93A2B8; --line:#283550;
-  --accent:#86ADEB; --accent-ink:#0E1522; --soft:#1C2C48; --danger:#F2867D;
+  --paper:#0E1522; --paper-rgb:14,21,34; --card:#162033; --ink:#E7EEF8; --muted:#93A2B8; --line:#283550;
+  --accent:#86ADEB; --accent-ink:#0E1522; --gold:#D6B466; --orn:.06; --soft:#1C2C48; --danger:#F2867D;
   --t-kenalan:#7FCBD1; --t-pacaran:#A9ABF5; --t-nikah:#E0BE6F; --t-anak:#79C2EC; --t-lain:#93A2B8;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --paper:#0E1522; --card:#162033; --ink:#E7EEF8; --muted:#93A2B8; --line:#283550;
-  --accent:#86ADEB; --accent-ink:#0E1522; --soft:#1C2C48; --danger:#F2867D;
+  --paper:#0E1522; --paper-rgb:14,21,34; --card:#162033; --ink:#E7EEF8; --muted:#93A2B8; --line:#283550;
+  --accent:#86ADEB; --accent-ink:#0E1522; --gold:#D6B466; --orn:.06; --soft:#1C2C48; --danger:#F2867D;
   --t-kenalan:#7FCBD1; --t-pacaran:#A9ABF5; --t-nikah:#E0BE6F; --t-anak:#79C2EC; --t-lain:#93A2B8;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.3); color-scheme:dark}
 
@@ -46,7 +47,15 @@ button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;line-height:1.1}
 
-.hero{padding:12px 0 22px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.hero{position:relative;padding:12px 0 6px;margin-bottom:22px}
+.hero>*:not(.hero-corner){position:relative}
+.hero-corner{position:absolute;top:-14px;right:-10px;width:clamp(120px,32vw,190px);color:var(--gold);opacity:.55;pointer-events:none}
+.hero-corner svg,.divider svg{display:block;width:100%;height:auto}
+.divider{width:min(240px,70%);margin:20px auto 0;color:var(--gold)}
+/* Motif jepun & patra di latar halaman dalam */
+#app::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--accent);opacity:var(--orn);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22%3E%3Cg transform=%22translate%2845 45%29 rotate%2810%29 scale%280.75%29%22 fill=%22%23000%22%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%280%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%2872%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28144%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28216%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28288%29%22/%3E%3Ccircle r=%224%22 fill-opacity=%220%22/%3E%3C/g%3E%3Cg transform=%22translate%28135 135%29 rotate%28-20%29 scale%280.55%29%22 fill=%22%23000%22%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%280%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%2872%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28144%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28216%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28288%29%22/%3E%3Ccircle r=%224%22 fill-opacity=%220%22/%3E%3C/g%3E%3Cg fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.6%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2895 40%29 rotate%2815%29 scale%280.9 0.9%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%28110 62%29 rotate%28200%29 scale%280.6 0.6%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2828 118%29 rotate%28-60%29 scale%280.8 0.8%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2860 150%29 rotate%28140%29 scale%28-0.6 0.6%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%28150 70%29 rotate%2880%29 scale%280.55 0.55%29%22/%3E%3C/g%3E%3Ccircle cx=%22150%22 cy=%2225%22 r=%222%22/%3E%3Ccircle cx=%2220%22 cy=%22165%22 r=%222%22/%3E%3Ccircle cx=%2285%22 cy=%22100%22 r=%221.6%22/%3E%3C/svg%3E") 0 0/180px 180px repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22%3E%3Cg transform=%22translate%2845 45%29 rotate%2810%29 scale%280.75%29%22 fill=%22%23000%22%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%280%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%2872%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28144%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28216%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28288%29%22/%3E%3Ccircle r=%224%22 fill-opacity=%220%22/%3E%3C/g%3E%3Cg transform=%22translate%28135 135%29 rotate%28-20%29 scale%280.55%29%22 fill=%22%23000%22%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%280%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%2872%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28144%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28216%29%22/%3E%3Cpath d=%22M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z%22 transform=%22rotate%28288%29%22/%3E%3Ccircle r=%224%22 fill-opacity=%220%22/%3E%3C/g%3E%3Cg fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.6%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2895 40%29 rotate%2815%29 scale%280.9 0.9%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%28110 62%29 rotate%28200%29 scale%280.6 0.6%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2828 118%29 rotate%28-60%29 scale%280.8 0.8%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%2860 150%29 rotate%28140%29 scale%28-0.6 0.6%29%22/%3E%3Cpath d=%22M0 0C14-10 34-6 38 8C41 19 31 26 23 21C17 17 20 9 26 11%22 transform=%22translate%28150 70%29 rotate%2880%29 scale%280.55 0.55%29%22/%3E%3C/g%3E%3Ccircle cx=%22150%22 cy=%2225%22 r=%222%22/%3E%3Ccircle cx=%2220%22 cy=%22165%22 r=%222%22/%3E%3Ccircle cx=%2285%22 cy=%22100%22 r=%221.6%22/%3E%3C/svg%3E") 0 0/180px 180px repeat}
+#app::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(var(--paper-rgb),.0) 30%,rgba(var(--paper-rgb),.55) 100%)}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .names{font-size:clamp(34px,9vw,52px);margin-top:6px}
 .names .amp{font-family:var(--f-hand);color:var(--accent);font-size:.85em;padding:0 .12em}
@@ -86,7 +95,7 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 .grid button{border:0;padding:0;background:var(--line);aspect-ratio:1;overflow:hidden;border-radius:6px}
 .grid img{width:100%;height:100%;object-fit:cover;display:block}
 .ph{background:linear-gradient(135deg,#DFE9F7,#B9CBE6);display:grid;place-items:center;font-family:var(--f-hand);font-size:20px;color:#4A5A75;width:100%;height:100%}
-.empty{padding:28px 18px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+.empty{padding:28px 18px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted);background:rgba(var(--paper-rgb),.85)}
 .empty p{margin:0 0 12px}
 .album-title{font-family:var(--f-hand);font-size:26px;margin:18px 0 8px;color:var(--accent)}
 
@@ -104,9 +113,17 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 .account{margin-top:28px;font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
 .linkbtn{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;font-size:13px}
 
-.login{max-width:380px;margin:8vh auto 0}
-.login h1{font-size:44px;margin-bottom:6px}
+.login{position:relative;z-index:1;max-width:380px;margin:0 auto;min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:flex-end;padding-block:24px 4vh}
+.login h1{font-size:48px;margin-bottom:6px}
 .login .lede{color:var(--muted);margin:0 0 22px}
+.login .card{background:rgba(var(--paper-rgb),.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.login-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(120% 70% at 50% 0%,var(--soft),var(--paper) 70%)}
+.login-photo{position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(100%,720px);aspect-ratio:1080/1135;max-height:80vh}
+.login-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;opacity:.72}
+.login-photo::after{content:"";position:absolute;inset:-1px;background:linear-gradient(to bottom,rgba(var(--paper-rgb),.05) 0%,rgba(var(--paper-rgb),.1) 40%,rgba(var(--paper-rgb),.6) 72%,var(--paper) 100%)}
+@media (min-width:721px){.login-photo::after{background:linear-gradient(to bottom,rgba(var(--paper-rgb),.05) 0%,rgba(var(--paper-rgb),.1) 40%,rgba(var(--paper-rgb),.6) 72%,var(--paper) 100%),linear-gradient(to right,var(--paper) 0%,rgba(var(--paper-rgb),0) 10%,rgba(var(--paper-rgb),0) 90%,var(--paper) 100%)}}
+.login-demo{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:14px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.login-photo img{animation:drift 30s ease-in-out infinite alternate}@keyframes drift{from{transform:scale(1)}to{transform:scale(1.06)}}}
 
 .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);z-index:5}
 .tabs button{flex:1;max-width:200px;border:0;background:none;padding:12px 4px 10px;font-size:13px;color:var(--muted);display:grid;justify-items:center;gap:3px}
@@ -128,6 +145,23 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 .lb .btn.ghost{background:transparent;color:#E7EEF8;border-color:#283550}
 .lb .close{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.14);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;z-index:40;max-width:calc(100% - 32px);text-align:center}
+/* Surat */
+.letters{display:grid;gap:12px}
+.env{display:flex;gap:14px;align-items:center;padding:16px;border-radius:14px;background:var(--card);border:1px solid var(--line);text-align:left;width:100%}
+.env .seal{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink)}
+.env.locked .seal{background:var(--soft);color:var(--muted)}
+.env svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.env .txt{min-width:0;display:grid;gap:2px}
+.env h3{font-family:var(--f-display);font-weight:400;font-size:19px;margin:0;line-height:1.25}
+.env .when{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.env .state{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.env.locked .state{color:var(--muted)}
+.paper{background:#FBFCFE;color:#1B2840;border-radius:4px;padding:28px 22px 26px;box-shadow:var(--shadow);background-image:repeating-linear-gradient(to bottom,transparent 0 31px,#E3EAF4 31px 32px);background-position:0 70px}
+.paper .p-date{font-size:13px;color:#5B6980;margin:0 0 6px}
+.paper h2{font-family:var(--f-hand);font-size:34px;color:#2C5A9E;margin:0 0 10px}
+.paper .p-body{font-size:17px;line-height:32px;white-space:pre-wrap;margin:0}
+.paper .p-sign{font-family:var(--f-hand);font-size:28px;text-align:right;margin:14px 0 0;color:#2C5A9E}
+.sheet.letter{background:var(--paper)}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:up .22s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
 @media (min-width:560px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
@@ -138,8 +172,9 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 
 <div class="wrap">
   <!-- Masuk -->
+  <div class="login-bg" id="loginBg" hidden aria-hidden="true"><div class="login-photo"><img id="loginImg" alt="" hidden></div></div>
   <section id="view-login" class="login" hidden>
-    <div class="eyebrow">Memori bahagia</div>
+    <div class="eyebrow">Album keluarga</div>
     <h1>Cerita Kita</h1>
     <p class="lede">Masuk pakai akun yang sudah dibuatkan.</p>
     <form class="form card" id="loginForm">
@@ -148,6 +183,11 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
       <p class="err" id="loginErr" hidden></p>
       <div class="actions"><button class="btn" type="submit" id="loginBtn">Masuk</button></div>
     </form>
+    <div class="login-demo" id="loginDemo" hidden>
+      <label class="linkbtn" for="bgTry" style="cursor:pointer">Coba foto lain</label>
+      <input type="file" id="bgTry" accept="image/*" hidden>
+      <button class="linkbtn" type="button" id="backDemo">Kembali ke pratinjau</button>
+    </div>
   </section>
 
   <div id="app" hidden>
@@ -157,17 +197,25 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
         <button data-role="admin" aria-pressed="true">Kamu (admin)</button>
         <button data-role="viewer" aria-pressed="false">Istri (lihat saja)</button>
       </div>
+      <button class="linkbtn" type="button" id="seeLogin" style="font-size:14px">Lihat halaman masuk</button>
     </div>
     <div id="setupBar" class="banner" hidden>
       <span>Belum ada data. Isi nama dan tanggal kalian dulu.</span>
       <button class="btn sm" id="startBtn">Isi sekarang</button>
     </div>
 
+    <div id="letterBar" class="banner" hidden>
+      <span id="letterBarText">Hari ini ada surat yang bisa dibuka.</span>
+      <button class="btn sm" id="letterBarBtn">Buka surat</button>
+    </div>
+
     <header class="hero">
+      <div class="hero-corner" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M160 6C130 10 108 30 104 56C100 80 112 98 132 98C148 98 152 80 140 76C132 73 128 82 134 85"/><path d="M128 18C110 6 84 8 74 24C66 37 74 50 86 46C94 43 92 33 85 34"/><path d="M106 44C86 44 70 60 74 80C78 96 96 98 100 88"/><path d="M110 74C98 96 104 120 124 128C138 133 146 120 138 114"/><path d="M150 36C140 44 138 58 146 64"/></g><g transform="translate(66 96) rotate(15) scale(0.55)" fill="currentColor"><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(0)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(72)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(144)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(216)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(288)"/><circle r="4" fill-opacity="0"/></g><circle cx="66" cy="96" r="2.4" fill="var(--paper,#fff)"/><circle cx="46" cy="66" r="2" fill="currentColor"/><circle cx="40" cy="120" r="1.6" fill="currentColor"/></svg></div>
       <div class="eyebrow" id="weddingLine">Cerita Kita</div>
       <h1 class="names" id="names">Cerita Kita</h1>
       <div class="together" id="together"></div>
       <div class="stats" id="stats"></div>
+      <div class="divider" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 28"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M88 14H40"/><path d="M96 14C88 4 72 3 66 10C61 16 66 22 72 19C76 17 75 12 71 12"/><path d="M78 14C72 22 60 24 54 19"/><path d="M50 14C44 7 34 8 33 14C32 19 38 20 40 17"/></g><circle cx="28" cy="14" r="1.8" fill="currentColor"/><circle cx="20" cy="14" r="1.2" fill="currentColor"/><g transform="translate(240 0) scale(-1 1)"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M88 14H40"/><path d="M96 14C88 4 72 3 66 10C61 16 66 22 72 19C76 17 75 12 71 12"/><path d="M78 14C72 22 60 24 54 19"/><path d="M50 14C44 7 34 8 33 14C32 19 38 20 40 17"/></g><circle cx="28" cy="14" r="1.8" fill="currentColor"/><circle cx="20" cy="14" r="1.2" fill="currentColor"/></g><g transform="translate(120 14) rotate(0) scale(0.42)" fill="currentColor"><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(0)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(72)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(144)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(216)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(288)"/><circle r="4" fill-opacity="0"/></g><circle cx="120" cy="14" r="2.2" fill="var(--paper,#fff)"/></svg></div>
     </header>
 
     <main>
@@ -184,6 +232,12 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
           <button data-f="sekarang" aria-pressed="false">Sampai sekarang</button>
         </div>
         <div id="gallery"></div>
+      </section>
+
+      <section id="view-surat" hidden>
+        <div class="section-head"><h2>Surat</h2><button class="btn sm admin-only" id="addLt">+ Surat</button></div>
+        <p class="note admin-only" style="margin:-6px 0 14px">Surat tetap terkunci untuk istri sampai tanggal bukanya (waktu Jakarta). Kunci ini dicek di server, jadi isinya tidak bisa diintip lebih awal.</p>
+        <div class="letters" id="letters"></div>
       </section>
 
       <section id="view-atur" hidden>
@@ -203,7 +257,7 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
         </form>
         <div class="card" style="margin-top:16px">
           <h2 style="font-size:20px;margin-bottom:8px">Siapa yang bisa mengubah</h2>
-          <p class="note">Hanya akun admin yang bisa menambah, mengubah, atau menghapus isi. Akun lain, misalnya akun istri, hanya bisa melihat timeline dan galeri. Aturan ini dijaga di server, jadi tetap berlaku walaupun tampilannya diakali.</p>
+          <p class="note">Hanya akun admin yang bisa menambah, mengubah, atau menghapus isi. Akun lain, misalnya akun istri, hanya bisa melihat timeline, galeri, dan surat yang sudah waktunya dibuka. Aturan ini dijaga di server, jadi tetap berlaku walaupun tampilannya diakali.</p>
         </div>
       </section>
 
@@ -215,6 +269,7 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 <nav class="tabs" role="tablist" aria-label="Menu" id="tabs" hidden>
   <button role="tab" data-v="timeline" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M6 3v18M6 7h12M6 12h9M6 17h12"/><circle cx="6" cy="7" r="1.5"/><circle cx="6" cy="12" r="1.5"/><circle cx="6" cy="17" r="1.5"/></svg>Timeline</button>
   <button role="tab" data-v="galeri" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>Galeri</button>
+  <button role="tab" data-v="surat" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Surat</button>
   <button role="tab" data-v="atur" aria-selected="false" class="admin-only"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Atur</button>
 </nav>
 
@@ -246,14 +301,21 @@ function memoryApi(){
       {id:'s2',type:'pacaran',date:'2016-08-17',title:'Resmi jadian',story:'Contoh: nonton kembang api 17-an, terus akhirnya berani ngomong.'},
       {id:'s3',type:'nikah',date:'2019-11-23',title:'Hari pernikahan',story:'Contoh: akad pagi, resepsi sore. Hujan sebentar, katanya pertanda baik.'},
       {id:'s4',type:'anak',date:'2021-06-05',title:'Si kecil lahir',story:'Contoh: 3,2 kg, lahir jam 04.40 pagi.'}],
-    photos:[]};
+    photos:[],
+    letters:[
+      {id:'l1',open_on:'2025-11-23',title:'Untuk anniversary ke-6',body:'Contoh surat yang sudah bisa dibuka.\n\nEnam tahun lalu kita bilang "iya" di depan keluarga. Terima kasih sudah sabar sama aku yang suka lupa naruh kunci motor.'},
+      {id:'l2',open_on:'2026-11-23',title:'Untuk anniversary ke-7',body:'Contoh surat yang masih terkunci untuk istri. Admin tetap bisa baca dan ubah isinya.'}]};
   let role='admin';
+  const todayIso=()=>isoOf(Date.now());
+  const mask=l=>{const open=role==='admin'||l.open_on<=todayIso();return{id:l.id,open_on:l.open_on,title:open?l.title:null,body:open?l.body:null,locked:l.open_on>todayIso()}};
   return{
     demo:true,
     setRole(r){role=r},
     async session(){return{email:role==='admin'?'kamu@contoh.com':'istri@contoh.com'}},
     async isAdmin(){return role==='admin'},
-    async load(){return JSON.parse(JSON.stringify(data))},
+    async load(){const d=JSON.parse(JSON.stringify(data));d.letters=data.letters.map(mask);return d},
+    async saveLetter(l){data.letters=[...data.letters.filter(x=>x.id!==l.id),{id:l.id,open_on:l.open_on,title:l.title,body:l.body}];return mask(l)},
+    async deleteLetter(l){data.letters=data.letters.filter(x=>x.id!==l.id)},
     url:p=>blobs.get(p)||'',
     async saveSettings(s){data.settings=s},
     async saveMilestone(m,file){if(file){const p='m/'+uid();blobs.set(p,URL.createObjectURL(await compress(file)));m.photoPath=p}
@@ -262,7 +324,7 @@ function memoryApi(){
     async addPhoto(file,album){const path='p/'+uid();blobs.set(path,URL.createObjectURL(await compress(file)));const p={id:uid(),album,date:isoOf(file.lastModified||Date.now()),caption:'',path};data.photos.push(p);return p},
     async updatePhoto(p){data.photos=data.photos.map(x=>x.id===p.id?p:x)},
     async deletePhoto(p){data.photos=data.photos.filter(x=>x.id!==p.id)},
-    async signIn(){},async signOut(){toast('Di pratinjau tidak ada akun sungguhan')}
+    async signIn(){showLogin(false);throw Object.assign(new Error('__demo'),{demo:1})},async signOut(){toast('Di pratinjau tidak ada akun sungguhan')}
   };
 }
 
@@ -285,15 +347,18 @@ function supabaseApi(){
     async session(){const{data}=await sb.auth.getSession();return data.session?{email:data.session.user.email}:null},
     async isAdmin(){const{data,error}=await sb.rpc('is_admin');return!error&&data===true},
     async load(){
-      const[s,m,p]=await Promise.all([
+      const[s,m,p,l]=await Promise.all([
         sb.from('settings').select('*').eq('id',1).maybeSingle(),
         sb.from('milestones').select('*').order('date'),
-        sb.from('photos').select('*').order('date')]);
+        sb.from('photos').select('*').order('date'),
+        sb.rpc('letter_list')]);
       const st=chk(s),ms=chk(m),ph=chk(p);
+      const lt=l.error?[]:(l.data||[]);
       const out={
         settings:st?{a:st.name_a||'',b:st.name_b||'',met:st.met||'',date:st.dating||'',wed:st.wed||''}:null,
         milestones:ms.map(x=>({id:x.id,type:x.type,date:x.date,title:x.title,story:x.story||'',photoPath:x.photo_path})),
-        photos:ph.map(x=>({id:x.id,album:x.album,date:x.date||'',caption:x.caption||'',path:x.path}))};
+        photos:ph.map(x=>({id:x.id,album:x.album,date:x.date||'',caption:x.caption||'',path:x.path})),
+        letters:lt.map(x=>({id:x.id,open_on:x.open_on,title:x.title,body:x.body,locked:x.locked}))};
       await sign([...out.photos.map(x=>x.path),...out.milestones.map(x=>x.photoPath)]);
       return out;
     },
@@ -314,6 +379,8 @@ function supabaseApi(){
     },
     async updatePhoto(p){chk(await sb.from('photos').update({caption:p.caption,date:p.date||null,album:p.album}).eq('id',p.id))},
     async deletePhoto(p){chk(await sb.from('photos').delete().eq('id',p.id));await sb.storage.from(B).remove([p.path])},
+    async saveLetter(l){chk(await sb.from('letters').upsert({id:l.id,open_on:l.open_on,title:l.title,body:l.body}));return{...l,locked:l.open_on>isoOf(Date.now())}},
+    async deleteLetter(l){chk(await sb.from('letters').delete().eq('id',l.id))},
     async signIn(email,password){const{error}=await sb.auth.signInWithPassword({email,password});if(error)throw error},
     async signOut(){await sb.auth.signOut();location.reload()}
   };
@@ -333,7 +400,50 @@ const errMsg=e=>{const m=String(e&&e.message||e||'');if(/row-level security|perm
 
 /* ================= State & render ================= */
 const api=DEMO?memoryApi():supabaseApi();
-let admin=false,state={settings:null,milestones:[],photos:[]},filter='semua';
+let admin=false,state={settings:null,milestones:[],photos:[],letters:[]},filter='semua';
+const ENV_OPEN='<svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="m3 10 9 6 9-6"/></svg>';
+const ENV_LOCK='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function nextAnniv(){const w=parse(state.settings&&state.settings.wed);if(!w)return isoOf(Date.now());const t=today();const n=new Date(t.getFullYear(),w.getMonth(),w.getDate());if(n<t)n.setFullYear(n.getFullYear()+1);return isoOf(n)}
+function annivNo(iso){const w=parse(state.settings&&state.settings.wed),d=parse(iso);if(!w||!d||d.getMonth()!==w.getMonth()||d.getDate()!==w.getDate())return null;const n=d.getFullYear()-w.getFullYear();return n>0?n:null}
+function renderLetters(){
+  const list=[...(state.letters||[])].sort((a,b)=>a.open_on<b.open_on?-1:1),t=today();
+  const todayOpen=list.filter(l=>l.open_on===isoOf(Date.now()));
+  $('#letterBar').hidden=!todayOpen.length;
+  if(todayOpen.length)$('#letterBarText').textContent=todayOpen.length>1?`Hari ini ada ${todayOpen.length} surat yang bisa dibuka.`:'Hari ini ada surat yang bisa dibuka.';
+  const box=$('#letters');
+  if(!list.length){box.innerHTML=`<div class="empty"><p>${admin?'Belum ada surat. Tulis satu untuk anniversary berikutnya.':'Belum ada surat.'}</p>${admin?'<button class="btn sm" data-addlt>Tulis surat</button>':''}</div>`;return}
+  box.innerHTML=list.map(l=>{
+    const d=parse(l.open_on),left=days(t,d),n=annivNo(l.open_on);
+    const lockedForWife=left>0;
+    const lockedHere=l.locked&&!admin;
+    const title=lockedHere?(n?`Surat untuk anniversary ke-${n}`:'Surat rahasia'):esc(l.title);
+    const when=left>0?`Bisa dibuka ${fmt(l.open_on)} · ${nf(left)} hari lagi`:`Dibuka sejak ${fmt(l.open_on)}`;
+    const state_=admin?(lockedForWife?'Terkunci untuk istri':'Sudah bisa dibaca istri'):(lockedHere?'Terkunci':(left===0?'Baru dibuka hari ini':'Sudah bisa dibaca'));
+    return `<button class="env${lockedForWife?' locked':''}" data-lt="${esc(l.id)}"><span class="seal">${lockedForWife?ENV_LOCK:ENV_OPEN}</span><span class="txt"><span class="state">${state_}</span><h3>${title}</h3><span class="when">${when}</span></span></button>`}).join('');
+}
+function readLetter(l){
+  const sign=state.settings&&state.settings.a;
+  $('#layer').innerHTML=`<div class="overlay" data-close><div class="sheet letter" role="dialog" aria-label="Surat">
+    <article class="paper"><p class="p-date">${esc(fmt(l.open_on))}</p><h2>${esc(l.title)}</h2><p class="p-body">${esc(l.body)}</p>${sign?`<p class="p-sign">— ${esc(sign)}</p>`:''}</article>
+    <div class="actions" style="margin-top:16px">${admin?`<button class="btn" data-ltedit="${esc(l.id)}">Ubah</button>`:''}<button class="btn ghost" data-x>Tutup</button></div></div></div>`;
+}
+function editLetter(id){
+  const l=state.letters.find(x=>x.id===id)||{id:'',open_on:nextAnniv(),title:'',body:''};
+  const n=annivNo(l.open_on);
+  $('#layer').innerHTML=`<div class="overlay" data-close><div class="sheet" role="dialog" aria-label="Surat"><h2>${l.id?'Ubah surat':'Surat baru'}</h2>
+    <form class="form" id="ltForm">
+      <div class="field"><label for="t-date">Bisa dibuka mulai</label><input type="date" id="t-date" value="${esc(l.open_on)}" required><span class="note">Bawaan: tanggal anniversary berikutnya.</span></div>
+      <div class="field"><label for="t-title">Judul</label><input id="t-title" value="${esc(l.title||'')}" placeholder="${n?`Untuk anniversary ke-${n}`:'Untukmu'}" required></div>
+      <div class="field"><label for="t-body">Isi surat</label><textarea id="t-body" style="min-height:220px" required>${esc(l.body||'')}</textarea></div>
+      <div class="actions"><button class="btn" type="submit">Simpan</button><button class="btn ghost" type="button" data-x>Batal</button>${l.id?`<button class="btn danger" type="button" data-ltdel="${esc(l.id)}">Hapus</button>`:''}</div>
+    </form></div></div>`;
+  $('#ltForm').onsubmit=async e=>{
+    e.preventDefault();const btn=e.submitter;busy(btn,true);
+    const n2={id:l.id||uid(),open_on:$('#t-date').value,title:$('#t-title').value.trim(),body:$('#t-body').value};
+    try{const saved=await api.saveLetter(n2);state.letters=[...state.letters.filter(x=>x.id!==saved.id),saved];closeLayer();renderLetters();toast(saved.open_on>isoOf(Date.now())?`Surat tersimpan, terkunci sampai ${fmt(saved.open_on)}`:'Surat tersimpan')}
+    catch(err){toast(errMsg(err));busy(btn,false)}
+  };
+}
 
 function applyRole(){
   document.querySelectorAll('.admin-only').forEach(el=>el.hidden=!admin);
@@ -392,20 +502,22 @@ async function renderAccount(){
   const s=await api.session();
   $('#account').innerHTML=s?`<span>Masuk sebagai ${esc(s.email)} · ${admin?'admin':'lihat saja'}</span><button class="linkbtn" id="outBtn">Keluar</button>`:'';
 }
-function renderAll(){applyRole();renderHero();renderTimeline();renderGallery();renderAccount()}
+function renderAll(){applyRole();renderHero();renderTimeline();renderGallery();renderLetters();renderAccount()}
 
 /* ================= Navigasi ================= */
 function show(v){
   if(v==='atur'&&!admin)v='timeline';
   document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
-  ['timeline','galeri','atur'].forEach(x=>$('#view-'+x).hidden=x!==v);
+  ['timeline','galeri','surat','atur'].forEach(x=>$('#view-'+x).hidden=x!==v);
   if(v==='atur')renderSettings();
   window.scrollTo({top:0});
 }
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.v)});
 $('#startBtn').onclick=()=>show('atur');
+$('#letterBarBtn').onclick=()=>show('surat');
+$('#addLt').onclick=()=>editLetter(null);
 $('#seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;document.querySelectorAll('#seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderGallery()});
-$('#roleSeg').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#roleSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));api.setRole(b.dataset.role);admin=await api.isAdmin();renderAll()});
+$('#roleSeg').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#roleSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));api.setRole(b.dataset.role);admin=await api.isAdmin();state=await api.load();closeLayer();renderAll()});
 const closeLayer=()=>{$('#layer').innerHTML=''};
 function busy(btn,on,label){if(!btn)return;if(on){btn.dataset.l=btn.textContent;btn.textContent=label||'Menyimpan…';btn.disabled=true}else{btn.textContent=btn.dataset.l||btn.textContent;btn.disabled=false}}
 
@@ -413,7 +525,7 @@ function busy(btn,on,label){if(!btn)return;if(on){btn.dataset.l=btn.textContent;
 $('#loginForm').addEventListener('submit',async e=>{
   e.preventDefault();const btn=$('#loginBtn');busy(btn,true,'Masuk…');$('#loginErr').hidden=true;
   try{await api.signIn($('#l-email').value.trim(),$('#l-pass').value);await boot()}
-  catch(err){$('#loginErr').textContent=/invalid/i.test(err.message)?'Email atau kata sandi salah.':errMsg(err);$('#loginErr').hidden=false}
+  catch(err){if(err.demo)return;$('#loginErr').textContent=/invalid/i.test(err.message)?'Email atau kata sandi salah.':errMsg(err);$('#loginErr').hidden=false}
   finally{busy(btn,false)}
 });
 
@@ -486,6 +598,13 @@ document.addEventListener('click',async e=>{
   const al=t.closest('[data-al]');if(al){pendingAlbum=al.dataset.al;closeLayer();$('#phFile').click();return}
   if(t.closest('[data-add]')){openMs(null);return}
   if(t.closest('[data-addph]')){askAlbum();return}
+  if(t.closest('[data-addlt]')){editLetter(null);return}
+  const lt=t.closest('[data-lt]');if(lt){const l=state.letters.find(x=>x.id===lt.dataset.lt);if(!l)return;
+    if(l.locked&&!admin){const left=days(today(),parse(l.open_on));toast(`Sabar ya, surat ini baru bisa dibuka ${nf(left)} hari lagi`);return}
+    readLetter(l);return}
+  const le=t.closest('[data-ltedit]');if(le){editLetter(le.dataset.ltedit);return}
+  const ld=t.closest('[data-ltdel]');if(ld){if(!ld.dataset.sure){ld.dataset.sure=1;ld.textContent='Ketuk lagi untuk hapus';return}
+    const l=state.letters.find(x=>x.id===ld.dataset.ltdel);try{await api.deleteLetter(l);state.letters=state.letters.filter(x=>x.id!==l.id);closeLayer();renderLetters();toast('Surat dihapus')}catch(err){toast(errMsg(err))}return}
   const ms=t.closest('[data-ms]');if(ms){openMs(ms.dataset.ms);return}
   const ph=t.closest('[data-ph]');if(ph){openPhoto(ph.dataset.ph);return}
   const sv=t.closest('[data-lbsave]');if(sv){const p={...state.photos.find(x=>x.id===sv.dataset.lbsave)};p.caption=$('#lb-cap').value.trim();p.date=$('#lb-date').value||p.date;p.album=$('#lb-al').value;busy(sv,true);
@@ -496,11 +615,24 @@ document.addEventListener('click',async e=>{
     const m=state.milestones.find(x=>x.id===md.dataset.msdel);try{await api.deleteMilestone(m);state.milestones=state.milestones.filter(x=>x.id!==m.id);closeLayer();renderTimeline();toast('Momen dihapus')}catch(err){toast(errMsg(err))}return}
 });
 
+/* ================= Latar halaman masuk ================= */
+// Taruh file login-bg.jpg di folder yang sama dengan index.html. Kalau tidak ada, latar biru polos.
+function setLoginImage(src){const img=$('#loginImg');img.onload=()=>{img.hidden=false};img.onerror=()=>{img.hidden=true};img.src=src}
+function showLogin(on){
+  $('#view-login').hidden=!on;$('#loginBg').hidden=!on;$('#app').hidden=on;$('#tabs').hidden=on;
+  $('#loginDemo').hidden=!(on&&api.demo);
+  if(on&&!$('#loginImg').getAttribute('src'))setLoginImage(CFG.loginImage||'login-bg.jpg');
+  window.scrollTo({top:0});
+}
+$('#seeLogin').onclick=()=>showLogin(true);
+$('#backDemo').onclick=()=>showLogin(false);
+$('#bgTry').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)setLoginImage(URL.createObjectURL(f))});
+
 /* ================= Mulai ================= */
 async function boot(){
   const sess=await api.session();
-  if(!sess){$('#view-login').hidden=false;$('#app').hidden=true;$('#tabs').hidden=true;return}
-  $('#view-login').hidden=true;$('#app').hidden=false;$('#tabs').hidden=false;$('#demoBar').hidden=!api.demo;
+  if(!sess){showLogin(true);return}
+  showLogin(false);$('#demoBar').hidden=!api.demo;
   admin=await api.isAdmin();
   try{state=await api.load()}catch(err){toast(errMsg(err),5000)}
   renderAll();
