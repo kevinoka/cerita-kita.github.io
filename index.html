@@ -144,6 +144,13 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 .lb .btn{background:#86ADEB;color:#0E1522}
 .lb .btn.ghost{background:transparent;color:#E7EEF8;border-color:#283550}
 .lb .close{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.14);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px}
+.music{position:fixed;z-index:6;right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));bottom:calc(76px + env(safe-area-inset-bottom,0px));width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--gold);box-shadow:var(--shadow);display:grid;place-items:center;padding:0}
+.music svg{width:26px;height:26px}
+.music .ic-play{color:var(--accent)}
+.music[aria-pressed="true"] .ic-play,.music[aria-pressed="false"] .ic-flower{display:none}
+.music .eq{position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold);opacity:0}
+.music[aria-pressed="true"] .eq{opacity:.45}
+@media (prefers-reduced-motion:no-preference){.music[aria-pressed="true"] .ic-flower{animation:spin 9s linear infinite}.music[aria-pressed="true"] .eq{animation:pulse 2.4s ease-out infinite}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{from{transform:scale(.92);opacity:.5}to{transform:scale(1.18);opacity:0}}}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;z-index:40;max-width:calc(100% - 32px);text-align:center}
 /* Surat */
 .letters{display:grid;gap:12px}
@@ -174,7 +181,7 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
   <!-- Masuk -->
   <div class="login-bg" id="loginBg" hidden aria-hidden="true"><div class="login-photo"><img id="loginImg" alt="" hidden></div></div>
   <section id="view-login" class="login" hidden>
-    <div class="eyebrow">Memori bahagia</div>
+    <div class="eyebrow">Album keluarga</div>
     <h1>Cerita Kita</h1>
     <p class="lede">Masuk pakai akun yang sudah dibuatkan.</p>
     <form class="form card" id="loginForm">
@@ -274,6 +281,12 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 </nav>
 
 <input type="file" id="phFile" accept="image/*" multiple hidden>
+<button class="music" id="musicBtn" type="button" aria-pressed="false" aria-label="Putar lagu kita" hidden>
+  <span class="eq" aria-hidden="true"></span>
+  <svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg>
+  <svg class="ic-flower" viewBox="-30 -30 60 60" aria-hidden="true"><g fill="currentColor"><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(0)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(72)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(144)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(216)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(288)"/></g><circle r="3.4" fill="var(--card)"/></svg>
+</button>
+<input type="file" id="musicTry" accept="audio/*" hidden>
 <div id="layer"></div>
 
 <script src="config.js"></script>
@@ -317,6 +330,7 @@ function memoryApi(){
     async saveLetter(l){data.letters=[...data.letters.filter(x=>x.id!==l.id),{id:l.id,open_on:l.open_on,title:l.title,body:l.body}];return mask(l)},
     async deleteLetter(l){data.letters=data.letters.filter(x=>x.id!==l.id)},
     url:p=>blobs.get(p)||'',
+    async musicUrl(){return null},
     async saveSettings(s){data.settings=s},
     async saveMilestone(m,file){if(file){const p='m/'+uid();blobs.set(p,URL.createObjectURL(await compress(file)));m.photoPath=p}
       data.milestones=[...data.milestones.filter(x=>x.id!==m.id),m];return m},
@@ -363,6 +377,7 @@ function supabaseApi(){
       return out;
     },
     url:p=>signed.get(p)||'',
+    async musicUrl(path){const{data,error}=await sb.storage.from(B).createSignedUrl(path,60*60*24);return error||!data?null:data.signedUrl},
     async saveSettings(s){chk(await sb.from('settings').upsert({id:1,name_a:s.a,name_b:s.b,met:s.met||null,dating:s.date||null,wed:s.wed||null,updated_at:new Date().toISOString()}))},
     async saveMilestone(m,file){
       const old=m.photoPath;
@@ -422,6 +437,7 @@ function renderLetters(){
     return `<button class="env${lockedForWife?' locked':''}" data-lt="${esc(l.id)}"><span class="seal">${lockedForWife?ENV_LOCK:ENV_OPEN}</span><span class="txt"><span class="state">${state_}</span><h3>${title}</h3><span class="when">${when}</span></span></button>`}).join('');
 }
 function readLetter(l){
+  music.letterOpened();
   const sign=state.settings&&state.settings.a;
   $('#layer').innerHTML=`<div class="overlay" data-close><div class="sheet letter" role="dialog" aria-label="Surat">
     <article class="paper"><p class="p-date">${esc(fmt(l.open_on))}</p><h2>${esc(l.title)}</h2><p class="p-body">${esc(l.body)}</p>${sign?`<p class="p-sign">— ${esc(sign)}</p>`:''}</article>
@@ -518,7 +534,7 @@ $('#letterBarBtn').onclick=()=>show('surat');
 $('#addLt').onclick=()=>editLetter(null);
 $('#seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;document.querySelectorAll('#seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderGallery()});
 $('#roleSeg').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#roleSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));api.setRole(b.dataset.role);admin=await api.isAdmin();state=await api.load();closeLayer();renderAll()});
-const closeLayer=()=>{$('#layer').innerHTML=''};
+const closeLayer=()=>{const wasLetter=!!$('#layer .letter');$('#layer').innerHTML='';if(wasLetter)music.letterClosed()};
 function busy(btn,on,label){if(!btn)return;if(on){btn.dataset.l=btn.textContent;btn.textContent=label||'Menyimpan…';btn.disabled=true}else{btn.textContent=btn.dataset.l||btn.textContent;btn.disabled=false}}
 
 /* ================= Masuk ================= */
@@ -621,12 +637,64 @@ function setLoginImage(src){const img=$('#loginImg');img.onload=()=>{img.hidden=
 function showLogin(on){
   $('#view-login').hidden=!on;$('#loginBg').hidden=!on;$('#app').hidden=on;$('#tabs').hidden=on;
   $('#loginDemo').hidden=!(on&&api.demo);
+  if(on)$('#musicBtn').hidden=true;
   if(on&&!$('#loginImg').getAttribute('src'))setLoginImage(CFG.loginImage||'login-bg.jpg');
   window.scrollTo({top:0});
 }
 $('#seeLogin').onclick=()=>showLogin(true);
 $('#backDemo').onclick=()=>showLogin(false);
 $('#bgTry').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)setLoginImage(URL.createObjectURL(f))});
+
+/* ================= Musik ================= */
+// Lagu disimpan privat di Supabase Storage, bucket "photos".
+// main  = diputar setelah masuk/sentuhan pertama; letter = diputar saat surat dibuka.
+const music=(()=>{
+  const SILENT='data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA';
+  const TRACKS={
+    main:{path:CFG.music||'music/bercinta-lewat-kata.mp3',title:CFG.musicTitle||'Bercinta Lewat Kata',url:null,pos:0},
+    letter:{path:CFG.musicLetter||'music/over-and-over-again.mp3',title:CFG.musicLetterTitle||'Over and Over Again',url:null,pos:0}};
+  const el=new Audio();el.loop=true;el.preload='none';el.setAttribute('playsinline','');
+  const btn=$('#musicBtn');let cur='main',unlocked=false,wanted=false,resumeOnShow=false,ready=false;
+  const pref=()=>{try{return localStorage.getItem('ck-music')}catch(e){return null}};
+  const setPref=v=>{try{localStorage.setItem('ck-music',v)}catch(e){}};
+  const t=()=>TRACKS[cur];
+  const isOn=()=>!el.paused&&!!t().url&&el.src===t().url;
+  const ui=()=>{const on=isOn();btn.setAttribute('aria-pressed',on);btn.setAttribute('aria-label',on?`Jeda ${t().title}`:`Putar ${t().title}`)};
+  el.addEventListener('play',ui);el.addEventListener('pause',ui);
+  function unlock(){if(unlocked)return;unlocked=true;if(isOn())return;el.src=SILENT;el.play().then(()=>{if(el.src.startsWith('data:'))el.pause()}).catch(()=>{})}
+  async function playTrack(name,fromStart){
+    if(cur!==name&&!el.paused&&el.src===t().url)t().pos=el.currentTime;
+    cur=name;wanted=true;const tr=t();if(!tr.url){ui();return}
+    if(el.src!==tr.url){el.src=tr.url;const p=fromStart?0:tr.pos;if(p)el.addEventListener('loadedmetadata',()=>{try{el.currentTime=p}catch(e){}},{once:true})}
+    else if(fromStart){try{el.currentTime=0}catch(e){}}
+    try{await el.play()}catch(e){wanted=false}
+    ui();
+    if('mediaSession'in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:tr.title,artist:state.settings?`${state.settings.a} & ${state.settings.b}`:'Cerita Kita'})}catch(e){}}
+  }
+  function pause(){wanted=false;el.pause()}
+  async function load(){
+    await Promise.all(Object.values(TRACKS).map(async tr=>{try{tr.url=tr.url||await api.musicUrl(tr.path)}catch(e){tr.url=null}}));
+    ready=true;btn.hidden=!(TRACKS.main.url||TRACKS.letter.url)&&!api.demo;ui();
+    if(wanted&&!isOn())playTrack(cur);
+  }
+  document.addEventListener('pointerdown',function first(e){
+    if(e.target.closest('#musicBtn,#musicTry,[data-lt]'))return;
+    document.removeEventListener('pointerdown',first,true);
+    if(pref()==='off')return;
+    if(ready&&t().url)playTrack(cur);else{unlock();wanted=true}
+  },true);
+  btn.addEventListener('click',()=>{
+    if(!t().url){if(api.demo)$('#musicTry').click();return}
+    if(isOn()){pause();setPref('off');toast('Lagu dijeda')}else{setPref('on');playTrack(cur)}
+  });
+  $('#musicTry').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;t().url=URL.createObjectURL(f);t().pos=0;setPref('on');playTrack(cur);toast('Lagu dicoba di pratinjau saja, tidak diunggah')});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeOnShow=isOn();el.pause()}else if(resumeOnShow){resumeOnShow=false;el.play().catch(()=>{})}});
+  return{
+    load,
+    letterOpened(){unlock();if(pref()==='off'||!TRACKS.letter.url)return;playTrack('letter',true)},
+    letterClosed(){if(cur!=='letter')return;const was=isOn();cur='main';if(was&&TRACKS.main.url)playTrack('main');else{el.pause();ui()}}
+  };
+})();
 
 /* ================= Mulai ================= */
 async function boot(){
@@ -636,6 +704,7 @@ async function boot(){
   admin=await api.isAdmin();
   try{state=await api.load()}catch(err){toast(errMsg(err),5000)}
   renderAll();
+  music.load();
 }
 boot();
 })();
