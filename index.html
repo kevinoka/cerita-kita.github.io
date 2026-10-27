@@ -411,7 +411,7 @@ const nf=n=>n.toLocaleString('id-ID');
 const fmt=s=>{const d=parse(s);return d?d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):''};
 function ymd(a,b){let y=b.getFullYear()-a.getFullYear(),m=b.getMonth()-a.getMonth(),d=b.getDate()-a.getDate();if(d<0){m--;d+=new Date(b.getFullYear(),b.getMonth(),0).getDate()}if(m<0){y--;m+=12}return{y,m,d}}
 function toast(t,ms=2400){document.querySelectorAll('.toast').forEach(x=>x.remove());const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),ms)}
-const errMsg=e=>{const m=String(e&&e.message||e||'');if(/row-level security|permission|not allowed|unauthorized/i.test(m))return'Akun ini tidak punya izin mengubah isi.';if(/fetch|network/i.test(m))return'Tidak tersambung ke server. Cek koneksi internet.';return m||'Terjadi kesalahan.'};
+const errMsg=e=>{const m=String(e&&e.message||e||'');if(/row-level security|permission|not allowed|unauthorized/i.test(m))return'Akun ini tidak punya izin mengubah isi.';if(/fetch|network/i.test(m))return'Tidak tersambung ke server. Cek koneksi internet.';if(/schema cache|does not exist|letter_list/i.test(m))return'Fitur ini belum dipasang di database. Jalankan file SQL-nya di Supabase.';return m||'Terjadi kesalahan.'};
 
 /* ================= State & render ================= */
 const api=DEMO?memoryApi():supabaseApi();
