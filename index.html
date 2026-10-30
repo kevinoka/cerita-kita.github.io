@@ -53,7 +53,9 @@ h1,h2{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;li
 .hero-corner svg,.divider svg{display:block;width:100%;height:auto}
 .divider{width:min(240px,70%);margin:20px auto 0;color:var(--gold)}
 /* Motif jepun & patra di latar halaman dalam (gambar biasa, tanpa lapisan fixed/mask: aman untuk Safari iPhone) */
-body.in-app{background-image:var(--pattern);background-size:180px 180px;background-repeat:repeat}
+/* Lapisan motif diam: gambar biasa yang sudah diwarnai, tanpa mask/opacity, z-index positif */
+body.in-app::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:var(--pattern);background-size:180px 180px;background-repeat:repeat}
+#app{position:relative;z-index:1}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .names{font-size:clamp(34px,9vw,52px);margin-top:6px}
 .names .amp{font-family:var(--f-hand);color:var(--accent);font-size:.85em;padding:0 .12em}
@@ -82,8 +84,13 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
 .tl h3{font-family:var(--f-display);font-weight:400;font-size:22px;margin:4px 0 6px;line-height:1.2}
 .tl p{margin:0 0 10px;max-width:60ch;white-space:pre-wrap}
 .tl .edit{background:none;border:0;padding:0;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.polaroid.zoom{cursor:zoom-in;position:relative}
+.polaroid.zoom::after{content:"";position:absolute;right:14px;top:14px;width:28px;height:28px;border-radius:50%;background:rgba(14,21,34,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/14px no-repeat}
+.lb .img{cursor:zoom-out}
+.lb .img img{cursor:default}
 .polaroid{display:inline-block;background:#fff;padding:8px 8px 6px;box-shadow:var(--shadow);transform:rotate(-1.4deg);margin:4px 0 10px;width:min(100%,280px)}
 .polaroid img,.polaroid .ph{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;max-width:100%}
+.polaroid .ph{height:auto}
 .polaroid figcaption{font-family:var(--f-hand);font-size:20px;color:#26324a;text-align:center;line-height:1.2;padding-top:4px}
 
 .seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--card);border:1px solid var(--line);margin-bottom:16px;width:fit-content;max-width:100%;overflow-x:auto}
@@ -95,6 +102,20 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
 .ph{background:linear-gradient(135deg,#DFE9F7,#B9CBE6);display:grid;place-items:center;font-family:var(--f-hand);font-size:20px;color:#4A5A75;width:100%;height:100%}
 .empty{padding:28px 18px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted);background:rgba(var(--paper-rgb),.85)}
 .empty p{margin:0 0 12px}
+.years{display:flex;gap:6px;overflow-x:auto;margin:-4px 0 18px;padding-bottom:4px;scrollbar-width:none}
+.years::-webkit-scrollbar{display:none}
+.years button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:14px;font-variant-numeric:tabular-nums}
+.years button[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.tl li.yr{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;padding:8px 0 10px 32px;margin:0 0 4px;background:var(--paper);display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line)}
+.tl li.yr .yr-n{font-family:var(--f-display);font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.tl li.yr .yr-c{font-size:13px;color:var(--muted)}
+.tl li.yr::before{content:"";position:absolute;left:3px;top:50%;width:10px;height:10px;margin-top:-5px;transform:rotate(45deg);background:var(--gold)}
+.tl li.yr+li{padding-top:12px}
+.safe-band{position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:4;pointer-events:none}
+.gal-year{display:flex;align-items:baseline;gap:8px;margin:14px 0 8px;font-size:13px;color:var(--muted)}
+.gal-year b{font-family:var(--f-display);font-weight:400;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.to-top{position:fixed;z-index:6;right:max(20px,calc(env(safe-area-inset-right,0px) + 16px));bottom:calc(136px + env(safe-area-inset-bottom,0px));width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid;place-items:center;padding:0}
+.to-top svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .album-title{font-family:var(--f-hand);font-size:26px;margin:18px 0 8px;color:var(--accent)}
 
 .form{display:grid;gap:14px}
@@ -132,9 +153,18 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
 .overlay{position:fixed;inset:0;background:rgba(8,14,26,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--paper);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .sheet h2{font-size:24px;margin-bottom:14px}
+.lb.view{padding-bottom:0}
 .lb{position:fixed;inset:0;background:#080D17;z-index:30;display:flex;flex-direction:column;color:#E7EEF8;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.lb .img{flex:1;min-height:0;display:grid;place-items:center;padding:12px}
-.lb img{max-width:100%;max-height:100%;object-fit:contain}
+.lb .img{flex:1;min-height:0;position:relative}
+.lb .img img{position:absolute;top:12px;left:12px;width:calc(100% - 24px);height:calc(100% - 24px);max-width:none;object-fit:contain}
+/* Mode lihat saja: foto memenuhi layar, keterangan menumpang di atas foto dengan gradasi gelap */
+.lb.view .img img{top:0;left:0;width:100%;height:100%}
+.lb .cap-ov{position:absolute;left:0;right:0;bottom:0;z-index:1;pointer-events:none;display:grid;gap:4px;
+  padding:72px max(20px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));
+  background:linear-gradient(to top,rgba(4,7,13,.88) 0%,rgba(4,7,13,.62) 45%,rgba(4,7,13,0) 100%);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.lb .cap-ov .capview{font-size:28px;line-height:1.15;color:#fff}
+.lb .cap-ov .sub{color:#D3DCEA;font-size:14px}
+.lb .cap-ov .story{margin:4px 0 0;font-size:15px;line-height:1.45;color:#E7EEF8;max-width:60ch}
 .lb .bar{padding:12px max(16px,env(safe-area-inset-left,0px)) 16px;display:grid;gap:10px}
 .lb input,.lb select{background:#162033;border:1px solid #283550;border-radius:10px;padding:9px 10px;color:#E7EEF8;min-width:0;width:100%}
 .lb .cap{font-family:var(--f-hand);font-size:22px}
@@ -142,7 +172,7 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
 .lb .sub{font-size:13px;color:#93A2B8;margin:0}
 .lb .btn{background:#86ADEB;color:#0E1522}
 .lb .btn.ghost{background:transparent;color:#E7EEF8;border-color:#283550}
-.lb .close{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.14);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px}
+.lb .close{position:absolute;z-index:2;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.14);border:0;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px}
 .music{position:fixed;z-index:6;right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));bottom:calc(76px + env(safe-area-inset-bottom,0px));width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--gold);box-shadow:var(--shadow);display:grid;place-items:center;padding:0}
 .music svg{width:26px;height:26px}
 .music .ic-play{color:var(--accent)}
@@ -227,6 +257,7 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
     <main>
       <section id="view-timeline">
         <div class="section-head"><h2>Perjalanan kita</h2><button class="btn sm admin-only" id="addMs">+ Momen</button></div>
+        <nav class="years" id="tlYears" aria-label="Lompat ke tahun" hidden></nav>
         <ol class="tl" id="tl"></ol>
       </section>
 
@@ -286,6 +317,8 @@ body.in-app{background-image:var(--pattern);background-size:180px 180px;backgrou
   <svg class="ic-flower" viewBox="-30 -30 60 60" aria-hidden="true"><g fill="currentColor"><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(0)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(72)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(144)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(216)"/><path d="M0-4C-4-9-9-18-5-25C-1-31 8-30 9-22C10-14 4-8 0-4Z" transform="rotate(288)"/></g><circle r="3.4" fill="var(--card)"/></svg>
 </button>
 <input type="file" id="musicTry" accept="audio/*" hidden>
+<button class="to-top" id="toTop" type="button" aria-label="Kembali ke atas" hidden><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<div class="safe-band" aria-hidden="true"></div>
 <div id="layer"></div>
 
 <script src="config.js"></script>
@@ -488,15 +521,39 @@ function renderTimeline(){
   const list=[...state.milestones].sort((a,b)=>a.date<b.date?-1:1);
   if(!list.length){$('#tl').innerHTML=`<li style="padding-left:0"><div class="empty"><p>${admin?'Belum ada momen. Mulai dari hari kalian kenalan.':'Belum ada momen di timeline.'}</p>${admin?'<button class="btn sm" data-add>Tambah momen</button>':''}</div></li>`;return}
   const first=parse(list[0].date);
-  $('#tl').innerHTML=list.map(m=>{
+  const byYear={};list.forEach(m=>{const y=(m.date||'').slice(0,4)||'—';(byYear[y]=byYear[y]||[]).push(m)});
+  const years=Object.keys(byYear);
+  const item=m=>{
     const d=parse(m.date),dn=first&&d?days(first,d)+1:null,src=m.photoPath&&api.url(m.photoPath);
-    const img=src?`<figure class="polaroid"><img src="${esc(src)}" alt="${esc(m.title)}"><figcaption>${esc(fmt(m.date))}</figcaption></figure>`
+    const img=src?`<figure class="polaroid zoom" data-msph="${esc(m.id)}" role="button" tabindex="0" aria-label="Lihat foto ${esc(m.title)} ukuran penuh"><img src="${esc(src)}" alt="${esc(m.title)}" loading="lazy" decoding="async"><figcaption>${esc(fmt(m.date))}</figcaption></figure>`
       :(api.demo&&!m.photoPath?`<figure class="polaroid"><div class="ph">foto contoh</div><figcaption>${esc(fmt(m.date))}</figcaption></figure>`:'');
     return `<li style="--c:var(--t-${m.type})"><span class="dot"></span>
       <div class="meta"><span class="type">${TYPES[m.type]||'Momen'}</span><span>${esc(fmt(m.date))}</span>${dn?`<span class="day">· hari ke-${nf(dn)}</span>`:''}</div>
       <h3>${esc(m.title)}</h3>${m.story?`<p>${esc(m.story)}</p>`:''}${img}
-      ${admin?`<div><button class="edit" data-ms="${esc(m.id)}">Ubah</button></div>`:''}</li>`}).join('');
+      ${admin?`<div><button class="edit" data-ms="${esc(m.id)}">Ubah</button></div>`:''}</li>`};
+  $('#tl').innerHTML=years.map(y=>`<li class="yr" id="tahun-${esc(y)}" data-yr="${esc(y)}"><span class="yr-n">${esc(y)}</span><span class="yr-c">${byYear[y].length} momen</span></li>`+byYear[y].map(item).join('')).join('');
+  const nav=$('#tlYears');nav.hidden=years.length<2;
+  nav.innerHTML=years.map(y=>`<button type="button" data-jump="${esc(y)}">${esc(y)}</button>`).join('');
+  markYear();
 }
+function jumpYear(y){
+  const el=document.getElementById('tahun-'+y);if(!el)return;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // posisi header di dalam daftar (header sticky, jadi hitung dari elemen sesudahnya)
+  const next=el.nextElementSibling||el;const top=next.getBoundingClientRect().top+scrollY-el.offsetHeight-8;
+  window.scrollTo({top:Math.max(0,top),behavior:reduce?'auto':'smooth'});
+}
+let ticking=false;
+function markYear(){
+  if($('#view-timeline').hidden)return;
+  const hs=[...document.querySelectorAll('#tl li.yr')];let cur=hs[0]&&hs[0].dataset.yr;
+  hs.forEach(h=>{const n=h.nextElementSibling;if(n&&n.getBoundingClientRect().top<140)cur=h.dataset.yr});
+  document.querySelectorAll('#tlYears button').forEach(b=>{const on=b.dataset.jump===cur;b.setAttribute('aria-current',on);if(on&&b.dataset.was!=='1'){const n=b.parentElement;const l=b.offsetLeft-n.offsetLeft;if(l<n.scrollLeft||l+b.offsetWidth>n.scrollLeft+n.clientWidth)n.scrollLeft=l-12}b.dataset.was=on?'1':''});
+}
+window.addEventListener('scroll',()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{ticking=false;markYear();
+  const tt=$('#toTop');const onList=!$('#view-timeline').hidden||!$('#view-galeri').hidden;tt.hidden=!(onList&&scrollY>900&&!$('#app').hidden)})},{passive:true});
+$('#toTop').onclick=()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+$('#tlYears').addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(b)jumpYear(b.dataset.jump)});
 function renderGallery(){
   const ph=[...state.photos].sort((a,b)=>(a.date||'')<(b.date||'')?-1:1),g=$('#gallery');
   if(!ph.length){
@@ -506,7 +563,8 @@ function renderGallery(){
   const groups=filter==='semua'?['nikah','sekarang']:[filter];
   g.innerHTML=groups.map(al=>{const items=ph.filter(p=>p.album===al);
     if(!items.length)return filter==='semua'?'':`<div class="empty"><p>Album ${ALBUM[al]} masih kosong.</p>${admin?'<button class="btn sm" data-addph>Tambah foto</button>':''}</div>`;
-    return `${filter==='semua'?`<div class="album-title">${ALBUM[al]}</div>`:''}<div class="grid">${items.map(p=>`<button data-ph="${esc(p.id)}" aria-label="${esc(p.caption||'Buka foto')}"><img src="${esc(api.url(p.path))}" alt="" loading="lazy"></button>`).join('')}</div>`}).join('');
+    const yrs={};items.forEach(p=>{const y=(p.date||'').slice(0,4)||'Tanpa tanggal';(yrs[y]=yrs[y]||[]).push(p)});
+    return `${filter==='semua'?`<div class="album-title">${ALBUM[al]}</div>`:''}`+Object.keys(yrs).map(y=>`<div class="gal-year"><b>${esc(y)}</b><span>${yrs[y].length} foto</span></div><div class="grid">${yrs[y].map(p=>`<button data-ph="${esc(p.id)}" aria-label="${esc(p.caption||'Buka foto')}"><img src="${esc(api.url(p.path))}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div>`).join('')}).join('');
 }
 function renderSettings(){
   const s=state.settings||{a:'',b:'',met:'',date:'',wed:''};
@@ -525,6 +583,8 @@ function show(v){
   document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   ['timeline','galeri','surat','atur'].forEach(x=>$('#view-'+x).hidden=x!==v);
   if(v==='atur')renderSettings();
+  $('#toTop').hidden=true;
+  if(v==='timeline')requestAnimationFrame(markYear);
   window.scrollTo({top:0});
 }
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.v)});
@@ -579,9 +639,23 @@ function openPhoto(id){
       <div class="row2"><input type="date" id="lb-date" value="${esc(p.date)}" aria-label="Tanggal foto"><select id="lb-al" aria-label="Album"><option value="nikah"${p.album==='nikah'?' selected':''}>Foto nikah</option><option value="sekarang"${p.album==='sekarang'?' selected':''}>Sampai sekarang</option></select></div>
       <div class="actions"><button class="btn sm" data-lbsave="${esc(p.id)}">Simpan</button><button class="btn ghost sm" data-lbdel="${esc(p.id)}">Hapus foto</button></div>`
     :`${p.caption?`<p class="capview">${esc(p.caption)}</p>`:''}<p class="sub">${esc(fmt(p.date))} · ${ALBUM[p.album]}</p>`;
-  $('#layer').innerHTML=`<div class="lb" role="dialog" aria-label="Foto"><button class="close" data-x aria-label="Tutup">×</button>
-    <div class="img"><img src="${esc(api.url(p.path))}" alt="${esc(p.caption)}"></div><div class="bar">${bar}</div></div>`;
+  $('#layer').innerHTML=admin?`<div class="lb" role="dialog" aria-label="Foto"><button class="close" data-x aria-label="Tutup">×</button>
+    <div class="img"><img src="${esc(api.url(p.path))}" alt="${esc(p.caption)}"></div><div class="bar">${bar}</div></div>`
+    :`<div class="lb view" role="dialog" aria-label="Foto"><button class="close" data-x aria-label="Tutup">×</button>
+    <div class="img"><img src="${esc(api.url(p.path))}" alt="${esc(p.caption)}"></div><div class="cap-ov">${bar}</div></div>`;
 }
+
+/* ================= Foto momen (popup lihat saja) ================= */
+function openMsPhoto(id){
+  const m=state.milestones.find(x=>x.id===id);if(!m||!m.photoPath)return;
+  $('#layer').innerHTML=`<div class="lb view" role="dialog" aria-label="Foto ${esc(m.title)}"><button class="close" data-x aria-label="Tutup">×</button>
+    <div class="img"><img src="${esc(api.url(m.photoPath))}" alt="${esc(m.title)}"></div>
+    <div class="cap-ov"><p class="sub">${TYPES[m.type]||'Momen'} · ${esc(fmt(m.date))}</p><p class="capview">${esc(m.title)}</p></div></div>`;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&$('#layer').innerHTML){closeLayer();return}
+  const mp=e.target.closest&&e.target.closest('[data-msph]');if(mp&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openMsPhoto(mp.dataset.msph)}
+});
 
 /* ================= Momen ================= */
 function openMs(id){
@@ -622,6 +696,8 @@ document.addEventListener('click',async e=>{
     const l=state.letters.find(x=>x.id===ld.dataset.ltdel);try{await api.deleteLetter(l);state.letters=state.letters.filter(x=>x.id!==l.id);closeLayer();renderLetters();toast('Surat dihapus')}catch(err){toast(errMsg(err))}return}
   const ms=t.closest('[data-ms]');if(ms){openMs(ms.dataset.ms);return}
   const ph=t.closest('[data-ph]');if(ph){openPhoto(ph.dataset.ph);return}
+  const mp=t.closest('[data-msph]');if(mp){openMsPhoto(mp.dataset.msph);return}
+  if(t.matches('.lb .img')){closeLayer();return}
   const sv=t.closest('[data-lbsave]');if(sv){const p={...state.photos.find(x=>x.id===sv.dataset.lbsave)};p.caption=$('#lb-cap').value.trim();p.date=$('#lb-date').value||p.date;p.album=$('#lb-al').value;busy(sv,true);
     try{await api.updatePhoto(p);state.photos=state.photos.map(x=>x.id===p.id?p:x);closeLayer();renderGallery();toast('Foto diperbarui')}catch(err){toast(errMsg(err));busy(sv,false)}return}
   const dl=t.closest('[data-lbdel]');if(dl){if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent='Ketuk lagi untuk hapus';return}
